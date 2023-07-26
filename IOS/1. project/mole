@@ -1,0 +1,311 @@
+#!/bin/sh
+# xivano08 Elena Ivanova
+# 23.3.2023
+
+export POSIXLY_CORRECT=yes
+export LC_ALL=C
+
+error() {
+    echo "$1">&2
+    exit 1
+}
+
+check(){
+    
+    while getopts ":mrhg:a:b:" opt; do
+        case $opt in 
+            g) groups="$OPTARG"
+                group "$groups";;
+            h) help;;
+            m) most_common=1;;
+            a) after_date="$OPTARG";;
+            b) before_date="$OPTARG";;
+            r) r_filter=1;;
+            \?) error 'argument does not exist'
+        esac
+    done
+
+}
+
+
+group(){
+    if [ -f "$1" ] || [ -d "$1" ];
+    then
+        error 'group is not specified'
+    fi
+}
+
+get_dir(){
+    sorted_file=$( cat "$MOLE_RC" )
+if [ -n "$path_is_dir" ]; then
+
+    if [ "$r_filter" = 1 ]; then
+    sorted_file=$( echo "$sorted_file" | grep -w "$path")
+    else
+    sorted_file=$( echo "$sorted_file" | grep -w "$path,")
+    fi
+
+elif [ -z "$path_is_file" ]; then
+
+    path=$(pwd)
+
+    if [ -n "$r_filter" ]; then
+    sorted_file=$( echo "$sorted_file" | grep -w "$path")
+    else
+    sorted_file=$( echo "$sorted_file" | grep -w "$path,")
+    fi
+fi
+}
+
+group_filter(){
+    if [ -n "$groups" ]; then
+
+    groupsearch=$( echo "$groups" | sed 's/,/|/g')
+    sorted_file=$( echo "$sorted_file" | grep -wE "$groupsearch")
+
+    if [ -z "$sorted_file" ]; then
+        error "no files"
+    fi
+
+fi
+}
+
+date_filter(){
+    if [ -n "$after_date" ]; then
+    dates=$( echo "$sorted_file" | awk -F',' '{print $1}')
+    dates=$( printf "%s\n%s" "$dates" "$after_date" | sort -g | grep -n "^")
+    line_num=$( echo "$dates" | grep "$after_date" | awk -F':' '{print $1}' | tail -n 1)
+    lines=$( echo "$sorted_file" | wc -w)
+    num=$(("$lines" - "$line_num" +1))
+    sorted_file=$( echo "$sorted_file" | tail -n "$num")
+
+    if [ -z "$sorted_file" ]; then
+        error "no files"
+    fi
+fi
+
+if [ -n "$before_date" ]; then
+    dates=$( echo "$sorted_file" | awk -F',' '{print $1}')
+    dates=$( printf "%s\n%s" "$dates" "$before_date" | sort -g | grep -n "^")
+    line_num=$( echo "$dates" | grep "$before_date" | awk -F':' '{print $1}' | head -n 1)
+    num=$(("$line_num" -1))
+    sorted_file=$( echo "$sorted_file" | head -n "$num")
+
+    if [ -z "$sorted_file" ]; then
+        error "no files"
+    fi
+fi
+}
+
+openfromfilters(){
+    get_dir
+    group_filter
+    date_filter
+
+    if [ -n "$most_common" ]; then
+
+        file_to_open=$(echo "$sorted_file" | awk -F',' '{print $3}' | sort -g | uniq -c | sort -g | tail -n 1 | awk -F' ' '{print $2}')
+    else
+
+    file_to_open=$(echo "$sorted_file" | awk -F',' '{print $3}' | tail -n 1)
+    fi
+
+    openfile
+}
+
+openfile(){
+ 
+    dateToday=$(date +%Y-%m-%d_%H-%M-%S)
+
+    relpath=$(dirname "$(readlink -f "$file_to_open")")
+
+    if [ -z "$groups" ]; then
+        groups="-"
+    fi
+
+    printf "%s,%s,%s,%s\n" "$dateToday" "$relpath" "$file_to_open" "$groups" >> "$MOLE_RC"
+
+    $editor "$file_to_open"
+
+}
+
+help(){
+    echo "usage: mole [-g GROUP] FILE
+                Zadaný soubor bude otevřen.
+        mole [-m] [-r] [FILTERS] [DIRECTORY]
+                Pokud DIRECTORY odpovídá existujícímu adresáři, 
+                skript z daného adresáře vybere soubor, který má být otevřen.
+                Pokud nebyl zadán adresář, předpokládá se aktuální adresář.
+                Pokud bylo v daném adresáři editováno skriptem více souborů, 
+                vybere se soubor, který byl pomocí skriptu otevřen (editován) jako poslední.
+        mole list [-r] [FILTERS] [DIRECTORY]
+                Pokud nebyl zadán adresář, předpokládá se aktuální adresář.
+    
+    [-g GROUP1[,GROUP2[,...]]]  
+            Specifikace skupin. Soubor bude uvažován (pro potřeby otevření nebo výpisu) pouze tehdy, 
+            pokud jeho spuštění spadá alespoň do jedné z těchto skupin.
+    [-a DATE]                  
+            Záznamy o otevřených (editovaných) souborech před tímto datem nebudou uvažovány. 
+            Argument DATE je ve formátu YYYY-MM-DD.
+    [-b DATE]                   
+            Záznamy o otevřených (editovaných) souborech po tomto datu nebudou uvažovány. 
+            Argument DATE je ve formátu YYYY-MM-DD.                            
+    -m                          
+            Skript vybere soubor, který byl pomocí skriptu otevřen (editován) nejčastěji.
+    -r
+            Script bude hledat vyhovující záznamy o otevření (editaci) souborů i mezi záznamy, 
+            které se vztahují ke vnořeným adresářům vzhledem k DIRECTORY
+    list                        
+            Skript zobrazí seznam souborů, 
+            které byly v daném adresáři otevřeny (editovány) pomocí skriptu."
+}
+
+getlist(){
+    get_dir
+    
+    date_filter
+
+    sorted_file=$(echo "$sorted_file" | awk -F',' -v OFS=': ' '{print $3, $4}' | rev | cut -d'/' -f1 | rev | sort -fd | uniq)
+
+    if [ -z "$sorted_file" ]; then
+        error "no files"
+    fi
+
+    sorted_file=$(echo "$sorted_file" | awk -F': ' '{
+      if ($1 in sorted_file) { 
+        sorted_file[$1] = sorted_file[$1]","$NF;
+      } else {
+        if (NR != 1) {
+          print line;
+        }
+        sorted_file[$1] = $0;
+      }
+      line = sorted_file[$1];
+        }
+        END {
+        print line;
+    }' | sed 's/-,'//g)
+
+    group_filter
+
+    list=$( echo "$sorted_file" | column -t -s" " -o " " )
+
+    echo "$list"
+}
+
+getlog(){
+    file=$( cat "$MOLE_RC" )
+    if [ -n "$path_is_dir" ]; then
+
+        while [ -n "$1" ]; do
+            path=$( realpath "$1" )
+            sorted=$( echo "$file" | grep -w "$path,")
+            sorted_file=$(printf "%s\n%s" "$sorted_file" "$sorted")
+            shift $((OPTIND -1))
+
+        done
+    else sorted_file=$( cat "$MOLE_RC" )
+    fi
+
+    date_filter
+
+    sorted_file=$( echo "$sorted_file" | awk -F',' '{print $3 ";" $1}' | sort -df)
+
+    sorted_file=$(echo "$sorted_file" | sort -df | awk -F';' '{
+      if ($1 in sorted_file) { 
+        sorted_file[$1] = sorted_file[$1]";"$NF;
+      } else {
+        if (NR != 1) {
+          print line;
+        }
+        sorted_file[$1] = $0;
+      }
+      line = sorted_file[$1];
+        }
+        END {
+        print line;
+    }' )
+}
+
+createlog(){
+    dateToday=$(date +%Y-%m-%d_%H-%M-%S)
+    log_name=$(printf "log_%s_%s" "$USER" "$dateToday")
+    if [ -d "$HOME/.mole" ];then 
+        echo "$sorted_file" > "$HOME/.mole/$log_name"
+        bzip2 -f "$HOME/.mole/$log_name"
+
+    else
+        mkdir "$HOME/.mole"
+        echo "$sorted_file" > "$HOME/.mole/$log_name"
+        bzip2 -f "$HOME/.mole/$log_name"
+    fi
+}
+
+##################################################################
+
+# create MOLE_RC
+if [ "$MOLE_RC"  != "" ]; then
+    touch "$MOLE_RC"
+else error 'no path'
+fi
+#check editor
+if [ -n "$EDITOR" ]; then
+  editor="$EDITOR"
+elif [ -n "$VISUAL" ]; then
+  editor="$VISUAL"
+else
+  editor=""vi
+fi
+
+#read arguments
+if [ "$1" = list ]; then
+
+    list=1
+    OPTIND=2
+    check "$@"
+    shift $((OPTIND -1))
+elif [ "$1" = "secret-log" ]; then
+
+    log=1
+    OPTIND=2
+    check "$@"
+    shift $((OPTIND -1))
+else
+    check "$@"
+    shift $((OPTIND -1))
+fi
+
+#read file or directory
+if [ -n "$1" ]; then 
+        path=$( realpath "$1" )
+
+if [ -d "$path" ]; then
+            path_is_dir=1
+
+        elif [ -f "$path" ]; then
+            path_is_file=1
+
+            file_to_open="$path"
+            openfile
+        else error "file or directory does not exist"
+        fi
+fi
+
+if [ -z "$list" ] && [ -z "$log" ] && [ -z "$path_is_file" ]; then
+
+    openfromfilters
+fi
+
+
+if [ -n "$list" ]; then
+
+    getlist
+fi
+
+
+if [ -n "$log" ]; then 
+
+    getlog "$1"
+
+    createlog
+fi
