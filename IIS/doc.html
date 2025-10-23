@@ -1,0 +1,303 @@
+<html><iframe id="MstReqFrm" translate="no" style="display: none;"></iframe><head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+     podle použitého editoru -->
+
+<h1>Název zadání - Zelný trh</h1> <!-- Nahradte názvem svého zadání -->
+
+<dl>
+	<dt>Autoři</dt>
+	<dd>Danil Domrachev <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xdomra00@stud.fit.vutbr.cz">xdomra00@stud.fit.vutbr.cz</a> -
+		Tabulky, kontrolery, webové stránky, návrh databáze a webových stránek
+	</dd>
+	<dd>Elena Ivanova <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xivano08@stud.fit.vutbr.cz">xivano08@stud.fit.vutbr.cz</a> - 
+		Fabriky, seeder, modely, kontrolery, tabulky, návrh databáze a webových stránek
+	</dd>
+	<dt>URL aplikace</dt>
+	<dd><a href="http://www.stud.fit.vutbr.cz/~xdomra00/home">http://www.stud.fit.vutbr.cz/~xdomra00/home</a></dd>
+	<dd>(pokud má aplikace více vstupních stránek, napište obdobně další URL)</dd>
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<table>
+<tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>admin@admin.com</td><td>password</td><td>Administrátor</td></tr>
+<tr><td>moder@admin.com</td><td>password</td><td>Moderátor</td></tr>
+<tr><td>prodavac@prodavac.com</td><td>password</td><td>Prodavač</td></tr>
+<tr><td>franta@franta.com</td><td>password</td><td>Zákazník</td></tr>
+</tbody></table>
+
+<p>(Diagram případů užití není nutné vkládat, pokud IS implementuje role a případy užití definované zadáním.)</p> 
+
+<h3>Video</h3>
+
+<p><a href="https://www.youtube.com/watch?v=prRfeEx8LN4">https://www.youtube.com/watch?v=prRfeEx8LN4</a></p> 
+
+<h2>Implementace</h2>
+<ul>
+	<li>
+		Administrátor
+		<ul>
+			<li>
+				spravuje uživatele, jako jediný vytváří moderátory - <u>ProfileController.php, function edit</u>
+			</li>
+		</ul>
+		
+	</li>
+	<li>
+		Moderátor
+		<ul>
+			<li>
+				schvaluje návrhy kategorií uživateli - <u>DesignController.php, function acceptDesign, declineDesign </u>
+			</li>
+		</ul>
+	</li>
+	<li>
+		Registrovaný uživatel
+		<ul>
+			<li>
+				edituje svůj profil - <u>ProfileController.php, function edit</u>
+			</li>
+			<li>
+				navrhuje nové kategorie plodin - <u>DesignController.php, function createDesign, delete</u>
+			</li>
+			<li>
+				vkládá nabídky produktů do kategorií - <u>ProductPageController.php, function createProductData</u>
+			</li>
+			<ul>
+				Farmář
+				<li>
+					spravuje své nabídky - <u>ProductPageController.php, function saveEditedProductData</u>
+				</li>
+				<li>
+					aktualizuje dostupné množství nabízených plodin - <u>ProductPageController.php, function saveEditedProductData</u>
+				</li>
+				<li>
+					vyřizuje objednávky - <u>OrderController.php, function edit</u>
+				</li>
+				<li>
+					plánuje samosběry - <u>EventsController.php, function createEventData, edit</u>
+				</li>
+			</ul>
+			<ul>
+				Zákazník
+				<li>
+					provádí objednávky - <u>OrderController.php, function create, delete. ProductPageController.php, function store</u>
+				</li>
+				<li>
+					hodnotí zakoupené produkty - <u>ProductPageController.php, function rate</u>
+				</li>
+			</ul>
+		</ul>
+	</li>
+	<li>
+		Neregistrovaný
+		<ul>
+			<li>
+				vyhledává a prohlíží nabídku ovoce a zeleniny - <u>CategoriesController.php, function show, index. HomeController.php, static function filterProducts</u>
+			</li>
+			<li>
+				prochází farmáře a jejich nabídky - <u>ProfileController.php, function index</u>
+			</li>
+			<li>
+				porovnává ceny pro jednotlivé kategorie - <u>catalog.blade.php</u>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Databáze</h3>
+
+<h5>(Otevřete v novém okně)</h5>
+<img src="db.png" width="300" height="200">
+
+<h2>Instalace</h2>
+ 
+<ul>
+<li>
+	Softwarové požadavky: 
+	<ul>
+		<li>PHP - 8.1</li>
+		<li>Laravel Framework - 10.48.24</li>
+		<li>Apache server (eva/merlin/WampServer - 3.3.5)</li>
+		<li>Composer - 2.8.1</li>
+		<li>mysql</li>
+		
+	</ul>
+</li>
+<br>
+<li>
+	Postup instalace na server (eva)
+	<br>	<br>
+	*v závorkách je uvedena současná složka (www)
+	<br><br>
+	1) <strong>Zavolat příkazy v CLI:</strong>
+	<br><br>
+	<ol>
+		<li>
+			cd www
+		</li>
+		<br>
+		<li>
+			mkdir IIS; cd IIS ; composer create-project laravel/laravel HoneVeg 	(IIS)
+		</li>
+		<br>
+		<li>
+			cd .. ; git clone https://github.com/ddanlie/HoneVeg.git (WWW)
+		</li>
+		<br>
+		<li>
+			rsync -a ./HoneVeg/ ./IIS/HoneVeg ; rm -rf ./HoneVeg (WWW)
+		</li>
+		<br>
+		<li>
+			cp ./IIS/HoneVeg/public/index.php ./ (WWW)
+		</li>
+		<br>
+		<li>
+			mkdir web ; cp -r ./IIS/HoneVeg/public/web/* ./web (WWW)
+		</li>
+	</ol>
+
+	<br><br>
+	2) <strong>Modifikovat řádky (cesty) v index.php složky 'www'. Obecně: '/../' => '/IIS/HoneVeg/'</strong>
+	<br><br>
+	<ol>
+		<li>
+			if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+				require $maintenance
+			}
+			<br><br>
+			na 
+			<br><br>
+			if (file_exists($maintenance = __DIR__.'/IIS/HoneVeg/storage/framework/maintenance.php')) {
+				require $maintenance;
+			}
+		</li>
+		<br>
+		<li>
+			require __DIR__.'/../vendor/autoload.php';
+			<br><br>
+			na
+			<br><br>
+			require __DIR__.'/IIS/HoneVeg/vendor/autoload.php';
+		</li>
+		<br>
+		<li>
+			$app = require_once __DIR__.'/../bootstrap/app.php';
+			<br><br>
+			na
+			<br><br>
+			$app = require_once __DIR__.'/IIS/HoneVeg/bootstrap/app.php';
+		</li>
+		<br>
+	</ol>
+
+	<br><br>
+	3) <strong> Přidat .htaccess (bude i v odevzdáném archivu) soubor do 'www' s obsahem: </strong>
+	<br><br>
+	
+	&lt;IfModule mod_rewrite.c&gt;<br>
+		RewriteEngine On<br>
+
+		# Handle Authorization Header<br>
+		RewriteCond %{HTTP:Authorization} .<br>
+		RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]<br>
+
+		# Redirect Trailing Slashes...<br>
+		RewriteRule ^(.*)/$ /$1 [L,R=301]<br>
+
+		# Handle Front Controller...<br>
+		RewriteCond %{REQUEST_FILENAME} !-d<br>
+		RewriteCond %{REQUEST_FILENAME} !-f<br>
+		RewriteRule ^ index.php [L]<br>
+
+			RewriteOptions InheritDown<br>
+	&lt;/IfModule&gt;<br>
+
+	<br><br>
+	4) <strong> Editovat IIS/HoneVeg/.env: </strong>
+	<br><br>
+	<ul>
+		<li>
+			Modifikovat:
+			<br><br>
+			APP_DEBUG=false<br>
+			DB_DATABASE=your_db<br>
+			DB_USERNAME=your_username<br>
+			DB_PASSWORD=your_password<br>
+			<br><br>
+		</li>
+		<li>
+			
+			Přidat:
+			<br><br>
+			DB_SOCKET=/var/run/.../path_to_socket<br>
+		</li>
+	</ul>
+
+	<br><br>
+	4) <strong> Přidat demonstrační/inicializační data. </strong>
+	<br>
+	! Bez alespoň inicialicačních dat stav webové stránky se počítá za nerelevantní !
+	<br><br>
+
+	<ol>
+		<li>
+			mysql -u your_username -p
+		</li>
+		<li>
+			use &lt;your_db&gt;
+		</li>
+		<li>
+			source demonstration.sql
+		</li>
+		<li>
+			OR source init.sql
+		</li>
+	</ol>
+</li>
+<br><br>
+</ul>
+
+<h2>Známé problémy</h2>
+<ul>
+	<li>
+		Prodavač se nemůže vzdát své role.
+		<br>
+		Důvod - nepromýšlené odstranění produktů a uživatelů.
+	</li>
+	<br>
+	<li>
+		Nelze zvolit zdá bude atribut kategorie povinný nebo ne.
+		<br>
+		Důvod - chyba v návrhu databáze tabulky labels.
+	</li>
+	<br>
+	<li>
+		Eva: nefunguje přidání nových obrázků.
+		<br>
+		Důvod - chybí "write" právo
+		<br>
+		*Lokálně - funguje
+	</li>
+	<br>
+	<li>
+		Přidání/změna obrázků někdě je striktně podle ukázané věliksoti (např. profil)<br>
+		Někdě obrázek se povoluje vůbec nepřidávat nebo přidát libovolného rozměru
+	</li>
+</ul>
+
+

@@ -1,0 +1,56 @@
+@import url('vars.css');
+
+
+
+.navButton
+{
+    width: auto;
+    height: 30px;
+    background-color: white;
+    border-radius: 15px;
+    border-style: solid;
+    padding: 0 20px 0px 20px;
+    font-family: var(--secondary-text-style);
+    font-size: var(--secondary-text-size);
+    border-width: 0px;
+}
+
+.navButton:hover
+{
+    outline: 3px solid black;
+}
+
+
+.defaultButton
+{
+    color: black;
+    white-space: nowrap;
+    padding: 0 15px 0px 15px;
+    width: auto;
+    height: 30px;
+    background-color: var(--yellow-style);;
+    border-radius: 15px;
+    border-color: var(--purple-style-1);
+    border-style: solid;
+    font-family: var(--secondary-text-style);
+    font-size: var(--secondary-text-size);
+    border-width: 0px;
+}
+
+.defaultButton:hover
+{
+    outline: 3px solid black;
+}
+
+.notChosenButton
+{
+    outline-color: transparent;
+} 
+
+
+.chosenButton
+{
+    outline: 3px solid black;
+} 
+
+

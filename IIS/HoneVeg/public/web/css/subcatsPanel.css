@@ -1,0 +1,21 @@
+.panel
+{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    text-align: center;
+    align-items: center;
+    z-index: 2;
+    justify-content: space-between;
+    height: 15%;
+    gap: 50px;
+    width: 10%;
+    margin: 15% 0 0 -12%;
+    word-wrap: break-word;
+}
+
+.panel button:hover
+{
+    color:white;
+    background-color: var(--green-style);
+}

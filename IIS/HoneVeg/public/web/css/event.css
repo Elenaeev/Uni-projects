@@ -1,0 +1,56 @@
+.eventErrMsg
+{
+    margin-top: 5%;
+}
+
+.eventBase
+{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 5%;
+}
+
+.eventBaseLeft
+{   
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 50px;
+    height: 50%;
+}
+
+
+.eventBaseRight
+{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    gap: 10%;
+    width: 30%;
+}
+
+.eventButtons
+{
+    display: flex;
+    gap: 10%;
+}
+
+
+
+/*Event catalog*/
+.eventsCatalog
+{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    padding: 5% 0 5% 0;
+    background-color: var(--background-style);
+    /* display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; */
+}
+
+.ecatItem
+{
+    margin: 5% 0 5% 0;
+}

@@ -1,0 +1,13 @@
+:root
+{
+    --primary-text-style: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
+    --primary-text-size: 26px;
+    --secondary-text-style: 'Copperplate';
+    --secondary-text-size: 18px;
+    
+    --purple-style-1: #65558F;
+    --yellow-style: #FFEA00;
+    --background-style: #FEEEEE;
+    --green-style: #077200;
+
+}

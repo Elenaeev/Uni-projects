@@ -1,0 +1,27 @@
+.productEditor
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    word-wrap: break-word;
+    width: 30%;
+    height: 120%;
+    gap: 50px;
+    margin: 10% auto;
+}
+
+.productEditor form
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.productEditErrMsg
+{
+    margin-top: 5%;
+    margin-bottom: -5%;
+}

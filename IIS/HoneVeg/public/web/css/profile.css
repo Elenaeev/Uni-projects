@@ -1,0 +1,151 @@
+.userBase
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 5%;
+    padding: 0 5% 0 5%;
+}
+
+.userBaseLeft
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0%;
+}
+
+.profileErrMsg
+{
+    margin-top: 5%;
+}
+
+.profileImageContent
+{
+    display: flex;
+    flex-direction:  column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    height: 105%;
+    z-index: 2;
+}
+
+.profileImageContent form
+{
+
+    margin-left: 20%;
+}
+
+.statusInfo
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: 10%;
+    align-items: center;
+    text-align: center;
+    height: 50%;
+    width: 200px;
+    margin-left: -50px;
+    padding-left: 50px;
+    z-index: 1;
+    background-color: rgb(239, 239, 239);
+}
+
+.userBaseRight
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    height: 100%;
+    width: 20%;
+}
+
+.userInfo
+{
+    
+}
+
+
+.userActivities
+{
+    display: flex;
+    justify-content: space-around;
+    gap: 5%;
+    padding: 5%;
+    border-radius: 10px;
+    margin: 10% 0 5% 0;
+    overflow-x: auto;
+    touch-action: none; 
+    user-select: none; 
+    scrollbar-width: thin;
+    scrollbar-color: #999 var(--background-style);
+    background-color: var(--background-style);
+}
+
+.activity
+{
+    display: flex;
+    min-width: 300px;
+    min-height: 400px;
+    background-color: var(--green-style);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #999 var(--green-style);
+
+}
+
+
+.activityItem
+{
+    touch-action: none; 
+    user-select: none; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    text-align: center;
+    background-color: white;
+    padding: 5% 5% 5% 5%;
+    margin: 5% 15% 5% 15%;
+    border-radius: 8px;
+    border-style: solid;
+    border-color: white;
+}
+
+.activityItem:hover
+{
+    border-style: solid;
+    border-color: black;
+}
+
+
+
+.myActivity
+{
+    display: flex;
+    flex-direction: column;
+    justify-content:  flex-start;
+    text-align: center; 
+    height: 350px;
+}
+
+.myActivity h1
+{
+    margin-top: 5%;    
+}
+
+
+.myActivity h2
+{
+    color: black;   
+    word-break: break-word;
+}
+
+
+
+.myEvents
+{
+
+}

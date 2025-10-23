@@ -1,0 +1,27 @@
+.eventEditor
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    word-wrap: break-word;
+    width: 30%;
+    height: 120%;
+    gap: 50px;
+    margin: 10% auto;
+}
+
+.eventEditor form
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.eventEditErrMsg
+{
+    margin-top: 5%;
+    margin-bottom: -5%;
+}
